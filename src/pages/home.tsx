@@ -1,169 +1,133 @@
 import * as React from 'react';
-// import {Pressable, Button, Image, Dimensions} from 'react-native';
 import {
   Pressable,
   Button,
   Image,
   Dimensions,
-  FlatList,
-  Text,
+  StyleSheet,
   View,
+  Text,
+  TouchableOpacity,
 } from 'react-native';
-import MediaSelector from './mediaselector';
+
 import DocumentPicker from 'react-native-document-picker';
-import Star from './star';
-import ImagePicker from 'react-native-image-crop-picker';
 
 const {width} = Dimensions.get('window');
 
-export default function HomeScreen() {
-  const [Images, setImages] = React.useState([]);
-  const [favoriteImages, setfavoriteImages] = React.useState([]);
-  const [fevimage, setfevimage] = React.useState(false);
-  const [mediaSelector, setMediaSelector] = React.useState(false);
-  const [showfavoriteImages, setshowfavoriteImages] = React.useState(false);
-
-  React.useEffect(() => {
-    setImages([]);
-    setfavoriteImages([]);
-  }, []);
-
-  const _pickGalleryImage = async () => {
-    try {
-      let result = await DocumentPicker.pickMultiple({
-        type: [DocumentPicker.types.images],
-      });
-      if (result) {
-        result.map(item => {
-          setMediaSelector(false);
-          let fileExtension = item.name.substr(item.name.lastIndexOf('.') + 1);
-          var files = ['png', 'jpg', 'jpeg'];
-          var check = files.includes(fileExtension.toLowerCase());
-
-          if (check) {
-            setImages(Images => [
-              ...Images,
-              {
-                Image: item.uri,
-                Extension: fileExtension,
-                Name: item.name,
-              },
-            ]);
-          }
-        });
-      }
-    } catch (err) {
-      setMediaSelector(false);
-      console.log(err);
-    }
-  };
-
-  const pickImage = async option => {
-    const Options = {
-      compressImageQuality: 1.0,
-      includeBase64: true,
-    };
-    const picker =
-      option == 'openPicker' ? ImagePicker.openPicker : ImagePicker.openCamera;
-    picker(Options)
-      .then(image => {
-        setMediaSelector(false);
-        let fileExtension = image.path.substr(image.path.lastIndexOf('.') + 1);
-        setImages(Images => [
-          ...Images,
-          {
-            Image: image.path,
-            Extension: fileExtension,
-          },
-        ]);
-      })
-      .catch(err => {
-        setMediaSelector(false);
-        console.log(err);
-      });
-  };
-
-  // console.log(favoriteImages);
-
-  const renderItem = ({item}) => {
-    return (
-      <Pressable marginHorizontal={15}>
-        <Image
-          style={{
-            marginBottom: 15,
-            marginRight: 15,
-            height: width / 2.5,
-            width: width / 2.5,
-            borderRadius: 15,
-          }}
-          source={{uri: `${item.Image}`}}
-        />
-        <Star
-          color={fevimage ? '#FEA012' : 'white'}
-          onPress={() => {
-            setfavoriteImages([...favoriteImages, item]), setfevimage(true);
-          }}
-          width={20}
-          height={20}
-          style={{position: 'absolute', top: 5, right: 30}}
-        />
-      </Pressable>
-    );
-  };
-
+export default function HomeScreen({navigation}) {
   return (
     <>
-      {mediaSelector ? (
-        <MediaSelector
-          title={'Select Image From'}
-          mediaSelector={mediaSelector}
-          onRequestClose={() => setMediaSelector(false)}
-          selectCamera={() => {
-            // setMediaSelector(false);
-            pickImage('openCamera');
-          }}
-          selectGallary={() => {
-            // setMediaSelector(false);
-            _pickGalleryImage();
+      <View style={{flexDirection: 'row', alignItems: 'center'}}>
+        <View
+          padding={10}
+          backgroundColor="red"
+          style={{
+            width: 2,
+            marginLeft: '45%',
+            height: 50,
+            borderTopLeftRadius: 50,
+            borderTopRightRadius: 50,
+            borderBottomLeftRadius: 50,
+            borderBottomRightRadius: 50,
           }}
         />
-      ) : (
-        <>
-          <Button
-            onPress={() =>{ setMediaSelector(true), setshowfavoriteImages(false)}}
-            title="Take Photo"
-            color="#841584"
-          />
-          <View padding={10} />
-          {favoriteImages.length > 0 ? (
-            <Button
-              style={{marginTop: 10}}
-              onPress={() => setshowfavoriteImages(true)}
-              title="Favorite Photo"
-              color="#841584"
-            />
-          ) : null}
-          <View padding={10} />
-          {showfavoriteImages ? (
-          <Button
-            onPress={() =>{ setshowfavoriteImages(false)}}
-            title="Go back to Photo"
-            color="#841584"
-          />): null}
-          <View padding={10} />
+        <View
+          padding={10}
+          backgroundColor="red"
+          style={{
+            width: 2,
+            marginLeft: 5,
+            marginTop: 30,
+            height: 50,
+            borderTopLeftRadius: 50,
+            borderTopRightRadius: 50,
+            borderBottomLeftRadius: 50,
+            borderBottomRightRadius: 50,
+          }}
+        />
+      </View>
+      <View style={{width: 80, paddingHorizontal: 100, flexDirection: 'row'}}>
+        <Image
+          style={{
+            zIndex: 2,
+            height: 200,
+            width: 150,
+            borderTopLeftRadius: 80,
+            borderTopRightRadius: 80,
+            borderBottomLeftRadius: 80,
+            borderBottomRightRadius: 80,
+          }}
+          source={require('./Images/background.jpg')}
+        />
+        <Image
+          style={{
+            position: 'absolute',
+            left: 150,
+            top: 50,
+            height: 200,
+            width: 150,
+            borderTopLeftRadius: 80,
+            borderTopRightRadius: 80,
+            borderBottomLeftRadius: 80,
+            borderBottomRightRadius: 80,
+          }}
+          source={require('./Images/background.jpg')}
+        />
+        <View
+          backgroundColor={'white'}
+          style={{
+            zIndex: 3,
+            padding: 10,
+            left: 180,
+            height: 70,
+            bottom: -30,
+            position: 'absolute',
+            borderTopRightRadius: 20,
+            borderBottomLeftRadius: 20,
+            borderBottomRightRadius: 20,
+          }}>
+          <Text style={{fontWeight: 'bold'}}>$500</Text>
+          <Text>THIS MONTH</Text>
+        </View>
+      </View>
+      <View style={{alignItems: 'center', marginTop: 100}}>
+        <Text style={{fontWeight: 'bold', fontSize: 15}}>
+          Translate & Earn.
+        </Text>
+        <Text>Now it is easy to earn money. just use the</Text>
+        <Text>translate and collect the point.</Text>
+      </View>
 
-          <Text style={{marginLeft : 10, fontSize:20, marginBottom :20}}> {showfavoriteImages ? 'favorite Photos' : 'Added Images In Favorite'}</Text>
-          <FlatList
-            data={showfavoriteImages ? favoriteImages : Images}
-            horizontal={false}
-            numColumns={2}
-            showsVerticalScrollIndicator={false}
-            renderItem={renderItem}
-            showsHorizontalScrollIndicator={false}
-            onEndReachedThreshold={0}
-          />
-        </>
-      )}
+      <TouchableOpacity style={styles.button}>
+        <Text>GET STARTED</Text>
+      </TouchableOpacity>
+      <View style={{alignItems: 'center', marginTop: 30}}>
+        <View style={{flexDirection: 'row'}}>
+          <Text>Already have an account?</Text>
+          <Text onPress={()=> navigation.navigate('login')} style={{color: 'red'}}>Login</Text>
+        </View>
+      </View>
     </>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    paddingHorizontal: 10,
+  },
+  button: {
+    alignItems: 'center',
+    alignSelf: 'center',
+    backgroundColor: 'red',
+    borderRadius: 30,
+    marginTop: 10,
+    padding: 20,
+    width: 150,
+  },
+  countContainer: {
+    alignItems: 'center',
+    padding: 10,
+  },
+});
